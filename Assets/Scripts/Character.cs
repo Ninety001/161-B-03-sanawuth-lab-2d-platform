@@ -9,6 +9,15 @@ public abstract class Character : MonoBehaviour
 
     protected Animator anim;
     protected Rigidbody2D rb;
+    
+    //methods
+    public void Init(int startHealth)
+    {
+        Health = startHealth;
+        Debug.Log($"{this.name} HP:{this.Health}");
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     public void TakeDamage(int damage)
     {
