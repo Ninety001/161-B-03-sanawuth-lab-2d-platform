@@ -1,28 +1,43 @@
 using UnityEngine;
 
-public class Player : Character
+public class Player : Character, IShootable
 {
+    [field: SerializeField] public GameObject Bullet { get; set; }
+    [field: SerializeField] public Transform ShootPoint { get; set; }
+    public float ReloadTime { get; set; } = 1f;
+    public float WaitTime { get; set; } = 0.2f;
+
+    private float nextShootTime = 0f;
+
     void Start()
     {
         base.Init(100);
     }
 
-    public void OnHitEnemy(Enemy enemy)
+    public void Shoot()
     {
-        TakeDamage(enemy.DamageHit);
+        if (Time.time >= nextShootTime && Bullet != null && ShootPoint != null)
+        {
+            
+            GameObject newBullet = Instantiate(Bullet, ShootPoint.position, Quaternion.identity);
+
+            
+            Weapon weapon = newBullet.GetComponent<Weapon>();
+            if (weapon != null)
+            {
+                weapon.InitWeapon(10, this);
+            }
+
+            nextShootTime = Time.time + ReloadTime + WaitTime;
+        }
     }
-    private void OnCollisionEnter2D(Collision2D other)
+
+    public void OnHitWith(Enemy enemy)
     {
-        Enemy enemy = other.gameObject.GetComponent<Enemy>();
         if (enemy != null)
         {
-            Debug.Log($"{this.name} Hit with {enemy.name}");
-            OnHitEnemy(enemy);
-        }
-
-        if (Health <= 0)
-        {
-            IsDead();
+            Debug.Log("Player hit by enemy!");
+            TakeDamage(10);
         }
     }
 }
