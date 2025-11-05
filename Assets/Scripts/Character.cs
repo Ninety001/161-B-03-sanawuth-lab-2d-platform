@@ -1,11 +1,28 @@
 using UnityEngine;
+using System;
 
 public abstract class Character : MonoBehaviour
 {
     private int health;
-    public int Health 
-    { get => health;
-      set => health = (value < 0) ? 0 : value; }
+    protected int maxHealth;
+
+    public int MaxHealth { get; private set; }
+    public int Health
+    {
+        get => health;
+        set
+        {
+            int newVal = (value < 0) ? 0 : value;
+            if (newVal == health) return;
+            health = newVal;
+
+            OnHealthChanged?.Invoke(health, maxHealth);
+
+            if (health <= 0) IsDead();    
+        }
+    }
+
+    public event Action<int, int> OnHealthChanged;
 
     protected Animator anim;
     protected Rigidbody2D rb;
@@ -13,6 +30,7 @@ public abstract class Character : MonoBehaviour
     //methods
     public void Init(int startHealth)
     {
+        MaxHealth = startHealth;               
         Health = startHealth;
         Debug.Log($"{this.name} HP:{this.Health}");
         anim = GetComponent<Animator>();
