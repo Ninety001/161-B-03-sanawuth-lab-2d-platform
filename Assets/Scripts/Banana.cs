@@ -2,13 +2,31 @@ using UnityEngine;
 
 public class Banana : Weapon
 {
+    [SerializeField] private float speed;
     public override void Move()
     {
-        throw new System.NotImplementedException();
+        float newX = transform.position.x + speed * Time.fixedDeltaTime;
+        float newY = transform.position.y;
+        Vector2 newPosition = new Vector2(newX, newY);
+        transform.position = newPosition;
     }
-
     public override void OnHitWith(Character character)
     {
-        throw new System.NotImplementedException();
+        if (character is Enemy)
+        {
+            character.TakeDamage(this.damage);
+            Debug.Log($"Banana hit {character.name}, dealt {damage} damage!");
+        }
+    }
+
+    void Start()
+    {
+        speed = 4.0f * GetShootDirection();
+        damage = 30;
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
     }
 }

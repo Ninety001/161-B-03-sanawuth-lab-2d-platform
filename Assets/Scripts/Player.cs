@@ -4,40 +4,57 @@ public class Player : Character, IShootable
 {
     [field: SerializeField] public GameObject Bullet { get; set; }
     [field: SerializeField] public Transform ShootPoint { get; set; }
-    public float ReloadTime { get; set; } = 1f;
-    public float WaitTime { get; set; } = 0.2f;
+     public float ReloadTime { get; set; } 
+     public float WaitTime { get; set; }  
 
-    private float nextShootTime = 0f;
 
     void Start()
     {
         base.Init(100);
+        ReloadTime = 1.0f;
+        WaitTime = 0.0f;
+
+    }
+
+    void FixedUpdate()
+    {
+        WaitTime += Time.fixedDeltaTime;
+    }
+
+    void Update()
+    {
+        Shoot();
     }
 
     public void Shoot()
     {
-        if (Time.time >= nextShootTime && Bullet != null && ShootPoint != null)
+        if (Input.GetButtonDown("Fire1") && WaitTime >= ReloadTime)
         {
             
-            GameObject newBullet = Instantiate(Bullet, ShootPoint.position, Quaternion.identity);
-
-            
-            Weapon weapon = newBullet.GetComponent<Weapon>();
-            if (weapon != null)
+            var bullet = Instantiate(Bullet, ShootPoint.position, Quaternion.identity);
+            Banana banana = bullet.GetComponent<Banana>();
+            if (banana != null)
             {
-                weapon.InitWeapon(10, this);
+                banana.InitWeapon(20, this);
             }
 
-            nextShootTime = Time.time + ReloadTime + WaitTime;
+            WaitTime = 0.0f;
+
         }
     }
 
     public void OnHitWith(Enemy enemy)
     {
+        if (enemy == null) return;
+        TakeDamage(enemy.DamageHit);
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        Enemy enemy = other.gameObject.GetComponent<Enemy>();
         if (enemy != null)
         {
-            Debug.Log("Player hit by enemy!");
-            TakeDamage(10);
+            OnHitWith(enemy);
         }
     }
 }
