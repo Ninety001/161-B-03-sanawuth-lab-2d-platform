@@ -1,21 +1,30 @@
 using UnityEngine;
 
-public class Crocodile : Enemy
+public class Crocodile : Enemy , IShootable
 {
     [SerializeField] private float atkRange;
     public Player player;
 
-     void Start()
+    [field: SerializeField] public GameObject Bullet { get; set; }
+    [field: SerializeField] public Transform ShootPoint { get; set; }
+    public float ReloadTime { get; set; }
+    public float WaitTime { get; set; }
+
+    void Start()
     {
-        base.Init(50);
+        base.Init(45);
         DamageHit = 30;
 
         atkRange = 6.0f;
         player = GameObject.FindFirstObjectByType<Player>();
+
+        WaitTime = 0.0f;
+        ReloadTime = 1.4f;
     }
 
     private void FixedUpdate()
     {
+        WaitTime += Time.fixedDeltaTime;
         Behavior();
     }
 
@@ -32,6 +41,14 @@ public class Crocodile : Enemy
 
     public void Shoot()
     {
-        Debug.Log($"{this.name} shoots rock to the {player.name}!");
+        if (WaitTime >= ReloadTime)
+        {
+            anim.SetTrigger("Shoot");  //call Shoot animation
+            var bullet = Instantiate(Bullet, ShootPoint.position, Quaternion.identity);
+            Rock rock = bullet.GetComponent<Rock>();
+            rock.InitWeapon(30, this);
+            WaitTime = 0.0f;
+        }
+
     }
 }

@@ -23,6 +23,8 @@ public abstract class Character : MonoBehaviour
     {
         Health -= damage;
         Debug.Log($"{this.name}:Take {damage}. HP left : {Health}");
+
+        IsDead();
     }
 
     public bool IsDead()
@@ -37,5 +39,6 @@ public abstract class Character : MonoBehaviour
         {
             return false;
         }
-    }    
+    }
+
 }

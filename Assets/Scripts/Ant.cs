@@ -11,7 +11,7 @@ public class Ant : Enemy
 
     void Start()
     {
-        base.Init(20);
+        base.Init(30);
         DamageHit = 20;
 
         velocity = new Vector2(-1.0f , 0.0f);

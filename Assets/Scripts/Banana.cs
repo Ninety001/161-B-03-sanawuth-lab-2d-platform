@@ -14,7 +14,7 @@ public class Banana : Weapon
     {
         if (character is Enemy)
         {
-            character.TakeDamage(this.damage);
+            character.TakeDamage(damage);
             Debug.Log($"Banana hit {character.name}, dealt {damage} damage!");
         }
     }
@@ -22,11 +22,22 @@ public class Banana : Weapon
     void Start()
     {
         speed = 4.0f * GetShootDirection();
-        damage = 30;
+        damage = 15;
     }
 
     private void FixedUpdate()
     {
         Move();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Character target = other.GetComponent<Character>();
+
+        if (target != null)
+        {
+            OnHitWith(target);   // เรียก method ของ Weapon.cs
+            Destroy(gameObject); // ทำลายกระสุนหลังชน
+        }
     }
 }
