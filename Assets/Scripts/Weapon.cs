@@ -19,9 +19,9 @@ public abstract class Weapon : MonoBehaviour
         float value = Shooter.ShootPoint.position.x - Shooter.ShootPoint.parent.position.x;
 
         if (value > 0)
-            return 1;  
+            return 1;
         else
-            return -1; 
+            return -1;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -37,12 +37,12 @@ public abstract class Weapon : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     void Update()
     {
-        
+
     }
 
 }
